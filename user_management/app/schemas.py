@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import Any, List, Optional
 
 
 class UserLogin(BaseModel):
@@ -19,4 +19,14 @@ class User(BaseModel):
 
 
 class UserWithPassword(User):
-    password: str
+    password: bytes
+
+
+class StandardResponse(BaseModel):
+    success: bool
+    response: Any
+    message: Optional[str]
+
+
+class Token(BaseModel):
+    access_token: str
