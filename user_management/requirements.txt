@@ -1,0 +1,11 @@
+flask
+gunicorn
+pyJWT
+gevent
+Flask-Cors
+psycopg2
+psycogreen
+python-dotenv
+Flask-pydantic
+sqlalchemy
+cryptography

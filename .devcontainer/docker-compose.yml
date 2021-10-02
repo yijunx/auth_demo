@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  auth_test:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/opt/yijunx/code
+      - ~/etc/localtime:/opt/yijunx/etc/localtime
+      - ~/etc/timezone:/opt/yijunx/etc/timezone
+      - ../../certs:/opt/yijunx/etc/certs
+    command: ["tail -f /dev/null"]
+    networks:
+      - default
+    ports:
+      - 3000:3000  # for the frontend
+      - 5000:5000  # for user-management
+      - 5001:5001  # for the service
+    # depends_on:
+    #   - db
+
+  db:
+    image: postgres:11
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db
+    networks:
+      - default
+
+  pgadmin:
+    image: dpage/pgadmin4:5.1
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pdadmin4@pdadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - 5050:80
+    depends_on:
+      - db
+    networks:
+      - default
+
+networks:
+  default:
+    external:
+      name: micro-services
