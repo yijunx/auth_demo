@@ -1,5 +1,6 @@
 def get_patched_app():
     from app.app import app
+
     return app
 
 

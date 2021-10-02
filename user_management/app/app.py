@@ -46,9 +46,7 @@ def login(body: UserLogin):
     # user_login = request.body_params
     for u in users:
         if u.email == body.email and u.password == hash_password(body.password):
-            return create_response(response=generate_token(user=User(
-                **u.dict()
-            )))
+            return create_response(response=generate_token(user=User(**u.dict())))
     return create_response(success=False, message="Username or password is not correct")
 
 
