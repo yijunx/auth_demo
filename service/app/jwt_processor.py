@@ -2,6 +2,7 @@ import jwt
 import os
 from app.schemas import User
 from flask import Request, abort
+from app.schemas import Role
 
 # mapped as specified from .devcontainer/docker-compose.yml
 CERTS_FOLDER = "/opt/yijunx/etc/certs"
@@ -23,9 +24,16 @@ def decode_token(token: str):
 
 
 def get_user_info_from_request(request: Request) -> User:
+    print(request.headers)
     token = request.headers.get("Authorization", None)
+    roles = request.headers.get("X-Roles", "")
+    roles = roles.split(",")
     if token is None:
         abort(status=401)
     else:
-        user = User(**decode_token(token=token.split(" ")[1]))
+        user = User(
+            **decode_token(token=token.split(" ")[1]),
+            roles=[Role(name=x) for x in roles],
+        )
+        print(f"user is {user}")
         return user

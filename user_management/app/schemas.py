@@ -11,10 +11,13 @@ class Role(BaseModel):
     name: str
 
 
-class User(BaseModel):
+class UserWithoutRole(BaseModel):
     id: str
     name: str
     email: str
+
+
+class User(UserWithoutRole):
     roles: List[Role]
 
 

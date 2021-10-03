@@ -1,6 +1,7 @@
 import jwt
 import os
-from app.schemas import User, Token
+from app.schemas import User, Token, UserWithoutRole
+from flask import Request, abort
 
 # mapped as specified from .devcontainer/docker-compose.yml
 CERTS_FOLDER = "/opt/yijunx/etc/certs"
@@ -25,10 +26,19 @@ def generate_token(user: User) -> Token:
     return Token(access_token=encoded)
 
 
-def decode_token(token: Token):
+def decode_token(token: str):
     pub = _read_pem(file_location=PUBLIC_KEY_LOCATION)
-    data = jwt.decode(jwt=token.access_token, key=pub, algorithms=["RS256"])
+    data = jwt.decode(jwt=token, key=pub, algorithms=["RS256"])
     return data
+
+
+def get_user_info_from_request(request: Request) -> UserWithoutRole:
+    token = request.headers.get("Authorization", None)
+    if token is None:
+        abort(status=401)
+    else:
+        user = UserWithoutRole(**decode_token(token=token.split(" ")[1]))
+        return user
 
 
 if __name__ == "__main__":
