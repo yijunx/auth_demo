@@ -2,6 +2,7 @@ import jwt
 import os
 from app.schemas import User, Token, UserWithoutRole
 from flask import Request, abort
+from datetime import datetime, timedelta, timezone
 
 # mapped as specified from .devcontainer/docker-compose.yml
 CERTS_FOLDER = "/opt/yijunx/etc/certs"
@@ -18,8 +19,16 @@ def _read_pem(file_location: str = None):
 
 
 def generate_token(user: User) -> Token:
+    # assuming the token expires 8 hours
+    # we can add issuer also, these things should come from envvar
+    additional_token_payload = {
+        "exp": datetime.now(timezone.utc) + timedelta(seconds=60*60*8),
+        "iat": datetime.now(timezone.utc)
+    }
+    payload = user.dict()
+    payload.update(additional_token_payload)
     encoded = jwt.encode(
-        payload=user.dict(),
+        payload=payload,
         key=_read_pem(file_location=PRIVATE_KEY_LOCATION),
         algorithm="RS256",
     )

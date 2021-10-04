@@ -14,9 +14,8 @@ services:
     networks:
       - default
     ports:
-      - 3000:3000  # for the frontend
-      - 5000:5000  # for user-management
-      - 5001:5001  # for the service
+      - 5000:5000 # for user-management
+      - 5001:5001 # for the service
     # depends_on:
     #   - db
 
