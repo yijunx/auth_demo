@@ -22,8 +22,8 @@ def generate_token(user: User) -> Token:
     # assuming the token expires 8 hours
     # we can add issuer also, these things should come from envvar
     additional_token_payload = {
-        "exp": datetime.now(timezone.utc) + timedelta(seconds=60*60*8),
-        "iat": datetime.now(timezone.utc)
+        "exp": datetime.now(timezone.utc) + timedelta(seconds=60 * 60 * 8),
+        "iat": datetime.now(timezone.utc),
     }
     payload = user.dict()
     payload.update(additional_token_payload)

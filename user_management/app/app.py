@@ -67,13 +67,14 @@ def logout():
     # if iat > last_logout, allow , else, deny
 
     # when user logout, update the user.last_logout to t2 (t2 will be > X)
-    # now if the user try to use the same token, 
+    # now if the user try to use the same token,
     # when authenticating:
     # iat will be < last_logout, then deny
 
     # this thing is better done with a proper database, so it is not coded here
     # as i want to make this a very light code to show authN/Z
     return {"hello": "world"}
+
 
 @app.route("/authenticate", methods=["POST"])
 def authenticate():
