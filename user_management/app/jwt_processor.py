@@ -42,11 +42,11 @@ def decode_token(token: str):
 
 
 def get_user_info_from_request(request: Request) -> UserWithoutRole:
-    token = request.headers.get("Authorization", None)
+    token = request.headers.get("Cookie", None)
     if token is None:
         abort(status=401)
     else:
-        user = UserWithoutRole(**decode_token(token=token.split(" ")[1]))
+        user = UserWithoutRole(**decode_token(token=token.split("=")[1]))
         return user
 
 

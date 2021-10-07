@@ -26,14 +26,14 @@ users = [
         id="001",
         name="admin",
         email="admin@tom.com",
-        password=hash_password("admin"),
+        password=hash_password("Iamyourfather_2021"),
         roles=[Role(name="the_admin")],
     ),
     UserWithPassword(
         id="002",
         name="user",
         email="user@tom.com",
-        password=hash_password("user"),
+        password=hash_password("Iamyourfather_2021"),
         roles=[Role(name="user")],
     ),
 ]
@@ -48,8 +48,9 @@ def login(body: UserLogin):
     # user_login = request.body_params
     for u in users:
         if u.email == body.email and u.password == hash_password(body.password):
+            user_with_token = generate_token(user=User(**u.dict()))
             return create_response(
-                response=generate_token(user=User(**u.dict()))
+                response=user_with_token, cookies={"token": user_with_token.access_token}
             )
     return create_response(success=False, message="Username or password is not correct")
 
@@ -79,8 +80,8 @@ def logout():
 @app.route("/authenticate", methods=["POST"])
 def authenticate():
     # so here we need to check user.last_logout vs token's iat..
-    user = get_user_info_from_request(request=request)
     print(request.headers)
+    user = get_user_info_from_request(request=request)
     for u in users:
         if u.email == user.email:
             roles = ",".join([r.name for r in u.roles])

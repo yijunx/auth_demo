@@ -25,15 +25,16 @@ def decode_token(token: str):
 
 def get_user_info_from_request(request: Request) -> User:
     print(request.headers)
-    token = request.headers.get("Authorization", None)
+    token = request.headers.get("Cookie", None)
     roles = request.headers.get("X-Roles", "")
     roles = roles.split(",")
     if token is None:
         abort(status=401)
     else:
+        user_dict = decode_token(token=token.split("=")[1])
+        user_dict["roles"] = [Role(name=x) for x in roles]
         user = User(
-            **decode_token(token=token.split(" ")[1]),
-            roles=[Role(name=x) for x in roles],
+            **user_dict,
         )
         print(f"user is {user}")
         return user
