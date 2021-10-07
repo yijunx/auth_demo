@@ -31,5 +31,5 @@ class StandardResponse(BaseModel):
     message: Optional[str]
 
 
-class Token(BaseModel):
+class UserWithToken(User):
     access_token: str

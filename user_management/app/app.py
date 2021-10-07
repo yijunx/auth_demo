@@ -49,7 +49,7 @@ def login(body: UserLogin):
     for u in users:
         if u.email == body.email and u.password == hash_password(body.password):
             return create_response(
-                response=generate_token(user=UserWithoutRole(**u.dict()))
+                response=generate_token(user=User(**u.dict()))
             )
     return create_response(success=False, message="Username or password is not correct")
 
@@ -80,6 +80,7 @@ def logout():
 def authenticate():
     # so here we need to check user.last_logout vs token's iat..
     user = get_user_info_from_request(request=request)
+    print(request.headers)
     for u in users:
         if u.email == user.email:
             roles = ",".join([r.name for r in u.roles])

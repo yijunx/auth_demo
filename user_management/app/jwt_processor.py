@@ -1,6 +1,6 @@
 import jwt
 import os
-from app.schemas import User, Token, UserWithoutRole
+from app.schemas import User, UserWithToken, UserWithoutRole
 from flask import Request, abort
 from datetime import datetime, timedelta, timezone
 
@@ -18,7 +18,7 @@ def _read_pem(file_location: str = None):
     return key
 
 
-def generate_token(user: User) -> Token:
+def generate_token(user: User) -> UserWithToken:
     # assuming the token expires 8 hours
     # we can add issuer also, these things should come from envvar
     additional_token_payload = {
@@ -32,7 +32,7 @@ def generate_token(user: User) -> Token:
         key=_read_pem(file_location=PRIVATE_KEY_LOCATION),
         algorithm="RS256",
     )
-    return Token(access_token=encoded)
+    return UserWithToken(**user.dict(), access_token=encoded)
 
 
 def decode_token(token: str):
