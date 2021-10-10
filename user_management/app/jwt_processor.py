@@ -3,6 +3,7 @@ import os
 from app.schemas import User, UserWithToken, UserWithoutRole
 from flask import Request, abort
 from datetime import datetime, timedelta, timezone
+from typing import List
 
 # mapped as specified from .devcontainer/docker-compose.yml
 CERTS_FOLDER = "/opt/yijunx/etc/certs"
@@ -16,6 +17,14 @@ def _read_pem(file_location: str = None):
     with open(file_location, "rb") as f:
         key = f.read()
     return key
+
+
+def get_priv_key():
+    return _read_pem(file_location=PRIVATE_KEY_LOCATION)
+
+
+def get_publ_key():
+    return _read_pem(file_location=PUBLIC_KEY_LOCATION)
 
 
 def generate_token(user: User) -> UserWithToken:
@@ -42,11 +51,16 @@ def decode_token(token: str):
 
 
 def get_user_info_from_request(request: Request) -> UserWithoutRole:
-    token = request.headers.get("Cookie", None)
+    cookie = request.headers.get("Cookie", None)
+    raisins: List[str]=cookie.split("; ")
+    token = None
+    for r in raisins:
+        if r.startswith("token="):
+            token = r.split("=")[1]
     if token is None:
         abort(status=401)
     else:
-        user = UserWithoutRole(**decode_token(token=token.split("=")[1]))
+        user = UserWithoutRole(**decode_token(token=token))
         return user
 
 

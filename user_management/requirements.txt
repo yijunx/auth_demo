@@ -7,5 +7,7 @@ psycopg2
 psycogreen
 python-dotenv
 Flask-pydantic
+Flask-WTF
 sqlalchemy
 cryptography
+

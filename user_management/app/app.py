@@ -4,8 +4,10 @@ from app.util.requests_util import create_response
 import hashlib
 import os
 from flask_pydantic import validate
-from app.jwt_processor import generate_token, get_user_info_from_request
+from flask_wtf import CSRFProtect, csrf
+from app.jwt_processor import generate_token, get_user_info_from_request, get_priv_key
 from flask_cors import CORS
+
 
 salt = os.urandom(32)  # Remember this
 
@@ -38,8 +40,11 @@ users = [
     ),
 ]
 
+
 app = Flask(__name__)
+app.secret_key = "secret_key"  # so that the csrf can work
 CORS(app=app)
+CSRFProtect(app)
 
 
 @app.route("/login", methods=["POST"])
@@ -50,7 +55,8 @@ def login(body: UserLogin):
         if u.email == body.email and u.password == hash_password(body.password):
             user_with_token = generate_token(user=User(**u.dict()))
             return create_response(
-                response=user_with_token, cookies={"token": user_with_token.access_token}
+                response=user_with_token,
+                cookies={"token": user_with_token.access_token},
             )
     return create_response(success=False, message="Username or password is not correct")
 
@@ -89,6 +95,11 @@ def authenticate():
             # if iat < last logout, deny the access
             return create_response(headers={"X-Roles": roles})
     return create_response(success=False, message="not a good user..", status=403)
+
+
+@app.route("/csrf-token", methods=["GET"])
+def get_anti_csrf_token():
+    return {"myCsrfToken": csrf.generate_csrf()} 
 
 
 @app.route("/internal/get_public_key", methods=["GET"])
