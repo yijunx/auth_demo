@@ -43,7 +43,12 @@ users = [
 
 app = Flask(__name__)
 app.secret_key = "secret_key"  # so that the csrf can work
-CORS(app=app)
+CORS(
+    app,
+    origins=["http://localhost:3000", "https://auth-test.freedynamicdns.net"],
+    supports_credentials=True,
+    expose_headers="Authorization",
+)
 CSRFProtect(app)
 
 
@@ -80,7 +85,7 @@ def logout():
 
     # this thing is better done with a proper database, so it is not coded here
     # as i want to make this a very light code to show authN/Z
-    return {"hello": "world"}
+    return create_response(message="you are logged out", cookies_to_delete=["token"])
 
 
 @app.route("/authenticate", methods=["POST"])
@@ -99,7 +104,7 @@ def authenticate():
 
 @app.route("/csrf-token", methods=["GET"])
 def get_anti_csrf_token():
-    return {"myCsrfToken": csrf.generate_csrf()} 
+    return {"myCsrfToken": csrf.generate_csrf()}
 
 
 @app.route("/internal/get_public_key", methods=["GET"])

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 from app.schemas import StandardResponse
 from pydantic import BaseModel
 from flask import make_response, jsonify
@@ -11,6 +11,7 @@ def create_response(
     status: int = 200,
     headers: Dict = None,
     cookies: Dict = None,
+    cookies_to_delete: List[str] = None,
 ):
     resp = make_response(
         jsonify(
@@ -24,4 +25,7 @@ def create_response(
     if cookies:
         for k, v in cookies.items():
             resp.set_cookie(key=k, value=v, httponly=True, secure=True)
+    if cookies_to_delete:
+        for key in cookies_to_delete:
+            resp.delete_cookie(key=key)
     return resp

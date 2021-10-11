@@ -52,7 +52,7 @@ def decode_token(token: str):
 
 def get_user_info_from_request(request: Request) -> UserWithoutRole:
     cookie = request.headers.get("Cookie", None)
-    raisins: List[str]=cookie.split("; ")
+    raisins: List[str] = cookie.split("; ")
     token = None
     for r in raisins:
         if r.startswith("token="):
