@@ -64,6 +64,16 @@ def get_user_info_from_request(request: Request) -> UserWithoutRole:
         return user
 
 
+def verify_google_tokenid(token: str) -> str:
+    # this will send a GET reuqest to googleapis...
+    # GET https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=token
+    # then check the aud, to see if it is the same as the clientid
+    # if so then ok
+    # and we take the information there
+    # we dont even need to decode it haha
+    return 
+
+
 if __name__ == "__main__":
     key = _read_pem()
     print(key)

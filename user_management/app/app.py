@@ -66,6 +66,16 @@ def login(body: UserLogin):
     return create_response(success=False, message="Username or password is not correct")
 
 
+@app.route("/login_with_google", methods=["POST"])
+def login_with_google():
+    # well there might be login with wechat all sorts of things..
+    # valid the token
+    # then login...
+    
+    pass
+
+
+
 @app.route("/logout", methods=["POST"])
 def logout():
     # here is how to do the backend logout
